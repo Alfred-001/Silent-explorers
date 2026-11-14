@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Museum of Silent Explorers</title>
+  <meta name="description" content="An interactive museum of the machines humanity left behind on the Moon, on Mars and in deep space.">
+  <meta name="theme-color" content="#04050b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2304050b' stroke='%23e9c46a' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23e9c46a'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..700&family=Instrument+Serif:ital@0;1&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+</head>
+<body>
+  <a class="skip" href="#museum">Skip to the museum</a>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="The Museum of Silent Explorers, back to top">
+      <span class="brand__dot" aria-hidden="true"></span>
+      <span>Silent Explorers</span>
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Sections">
+      <a href="#moon" data-spy="moon">The Moon</a>
+      <a href="#mars" data-spy="mars">Mars</a>
+      <a href="#deep" data-spy="deep">Deep space</a>
+      <a href="#timeline" data-spy="timeline">Timeline</a>
+      <a href="#why" data-spy="why">Why they stay</a>
+      <a href="#epilogue" data-spy="epilogue">Your turn</a>
+    </nav>
+
+    <div class="nav__right">
+      <div class="log">
+        <button type="button" class="log__btn" id="logBtn" aria-expanded="false" aria-controls="logPanel">
+          Field log <b id="logCount">0/6</b>
+        </button>
+        <div class="log__panel" id="logPanel" hidden>
+          <p class="log__title">Machines you have identified</p>
+          <ul id="logList"></ul>
+        </div>
+      </div>
+      <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ PROLOGUE / HERO ============ -->
+    <section class="hero" id="top" aria-label="Prologue">
+      <div class="orbits" aria-hidden="true">
+        <i></i><i></i><i></i>
+      </div>
+      <div class="hero__veil" aria-hidden="true"></div>
+
+      <!-- stage 1: the message arrives -->
+      <div class="stage stage--invite is-active" data-stage="invite">
+        <p class="stage__small">A NASA Space Apps story</p>
+        <button type="button" class="envelope" id="openMessage">
+          <span class="envelope__ping" aria-hidden="true"></span>
+          <span class="envelope__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7.5 8 6 8-6"/></svg>
+          </span>
+          <span class="envelope__text">
+            <b>1 new message</b>
+            <small>Sender unknown. Open it.</small>
+          </span>
+        </button>
+        <button type="button" class="link-skip" data-skip>Skip the intro</button>
+      </div>
+
+      <!-- stage 2: the message and the map -->
+      <div class="stage stage--terminal" data-stage="terminal">
+        <div class="terminal" role="log" aria-live="polite">
+          <div class="terminal__bar"><span></span><span></span><span></span><em>No name. No number. No location.</em></div>
+          <div class="terminal__body" id="termBody"></div>
+        </div>
+
+        <div class="map" id="introMap" aria-label="A map with three places: the Moon, Mars and deep space">
+          <svg viewBox="0 0 600 200" role="img" aria-hidden="true">
+            <defs>
+              <radialGradient id="mapMoon" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#f3f5fb"/><stop offset="1" stop-color="#7b869f"/></radialGradient>
+              <radialGradient id="mapMars" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#f08a5c"/><stop offset="1" stop-color="#8a3216"/></radialGradient>
+            </defs>
+            <path class="map-path" d="M90 120 Q195 10 300 88 T510 112"/>
+            <g class="map-node" data-i="0">
+              <circle cx="90" cy="120" r="26" fill="url(#mapMoon)"/>
+              <circle cx="80" cy="112" r="5" fill="#000" opacity=".15"/><circle cx="100" cy="128" r="7" fill="#000" opacity=".12"/><circle cx="96" cy="108" r="3" fill="#000" opacity=".12"/>
+              <text x="90" y="172">The Moon</text>
+            </g>
+            <g class="map-node" data-i="1">
+              <circle cx="300" cy="88" r="21" fill="url(#mapMars)"/>
+              <path d="M284 86q16 8 32-2" stroke="#000" stroke-opacity=".15" stroke-width="3" fill="none"/>
+              <text x="300" y="135">Mars</text>
+            </g>
+            <g class="map-node" data-i="2">
+              <circle cx="510" cy="112" r="28" fill="none" stroke="#7c8cff" stroke-opacity=".5" stroke-dasharray="3 5"/>
+              <circle cx="510" cy="112" r="16" fill="none" stroke="#7c8cff" stroke-opacity=".7"/>
+              <circle cx="510" cy="112" r="5" fill="#e9c46a"/>
+              <text x="510" y="172">Deep space</text>
+            </g>
+          </svg>
+        </div>
+        <button type="button" class="link-skip" data-skip>Skip the intro</button>
+      </div>
+
+      <!-- stage 3: countdown -->
+      <div class="stage stage--countdown" data-stage="countdown">
+        <div class="count" id="count" aria-live="assertive">3</div>
+        <button type="button" class="link-skip" data-skip>Skip the intro</button>
+      </div>
+
+      <!-- stage 4: title -->
+      <div class="stage stage--title" data-stage="title">
+        <p class="title-welcome rise" style="--d:.1s">Welcome to</p>
+        <h1 class="title-main rise" style="--d:.35s">The Museum of <span>Silent Explorers</span></h1>
+        <p class="title-sub rise" style="--d:.9s">No glass cases. No guards. No visitors.<br>Its exhibits are millions of kilometres away, on worlds humans have barely explored. And every one of them has a story.</p>
+        <a class="cta rise" style="--d:1.3s" href="#moon">Enter the museum</a>
+        <p class="title-hint rise" style="--d:1.7s">Three galleries. Six machines. Identify each one to unlock its story.</p>
+      </div>
+    </section>
+
+    <div id="museum">
+
+      <!-- ============ GALLERY 1: MOON ============ -->
+      <section class="gallery gallery--moon" id="moon" data-num="1" aria-labelledby="moon-title">
+        <header class="gallery__head reveal">
+          <p class="eyebrow">Gallery one: the Moon</p>
+          <h2 id="moon-title">The first footprints, <em>the forgotten machines</em></h2>
+          <div class="gallery__cols">
+            <div class="lede">
+              <p>More than half a century ago, humans did something that had once seemed impossible. They landed astronauts on another world.</p>
+              <p>But astronauts couldn't explore the Moon with their feet alone. They needed technology: scientific instruments, cameras, communication equipment and, on the later Apollo missions, a car. Imagine driving on a world without roads.</p>
+              <p class="lede__punch">The astronauts came home. The science stayed.</p>
+            </div>
+            <aside class="clock" data-since="1972-12-14T22:54:00Z" aria-label="Time since the last Apollo crew left the Moon">
+              <span class="clock__label">Silent since the last crew left</span>
+              <span class="clock__time">&nbsp;</span>
+              <span class="clock__note">Apollo 17 lifted off from the Moon on 14 December 1972.</span>
+              <span class="chip">About 384,400 km from Earth</span>
+            </aside>
+          </div>
+        </header>
+        <div class="exhibits" data-gallery="moon"></div>
+      </section>
+
+      <!-- ============ GALLERY 2: MARS ============ -->
+      <section class="gallery gallery--mars" id="mars" data-num="2" aria-labelledby="mars-title">
+        <header class="gallery__head reveal">
+          <p class="eyebrow">Gallery two: Mars</p>
+          <h2 id="mars-title">The little machine <em>that refused to give up</em></h2>
+          <div class="gallery__cols">
+            <div class="lede">
+              <p>Now travel millions of kilometres away. Welcome to Mars, a planet that has fascinated people for generations.</p>
+              <p>Exploring it is not easy. There is no astronaut waiting to repair a broken machine. No mechanic to replace a damaged wheel. No human hand to clean its instruments. Everything has to be designed to work remotely.</p>
+              <p class="lede__punch">NASA sent two robotic twins: Spirit and Opportunity.</p>
+            </div>
+            <aside class="clock" data-since="2018-06-10T00:00:00Z" aria-label="Time since Opportunity's last signal">
+              <span class="clock__label">Silent since Opportunity's last signal</span>
+              <span class="clock__time">&nbsp;</span>
+              <span class="clock__note">A global dust storm blocked its sunlight in June 2018.</span>
+              <span class="chip">55 to 400 million km from Earth</span>
+            </aside>
+          </div>
+        </header>
+        <div class="exhibits" data-gallery="mars"></div>
+      </section>
+
+      <!-- ============ GALLERY 3: DEEP SPACE ============ -->
+      <section class="gallery gallery--deep" id="deep" data-num="3" aria-labelledby="deep-title">
+        <header class="gallery__head reveal">
+          <p class="eyebrow">Gallery three: deep space</p>
+          <h2 id="deep-title">The travellers <em>that never came home</em></h2>
+          <div class="gallery__cols">
+            <div class="lede">
+              <p>Our final destination is different. There is no ground beneath us. No mountains, no roads, no atmosphere. Only the endless dark.</p>
+              <p>Unlike the rovers on the Moon and Mars, the Voyagers are not simply abandoned equipment. They kept going long after their planetary tour ended, and that is what makes them extraordinary.</p>
+              <p class="lede__punch">Two machines from Earth are carrying a message from our planet into the vastness of space.</p>
+            </div>
+            <aside class="clock clock--alive" data-since="1977-09-05T12:56:00Z" aria-label="Time since Voyager 1 launched">
+              <span class="clock__label">Voyager 1 has been travelling for</span>
+              <span class="clock__time">&nbsp;</span>
+              <span class="clock__note">Launched 5 September 1977. Still sending data home.</span>
+              <span class="chip">More than 24 billion km from Earth</span>
+            </aside>
+          </div>
+        </header>
+        <div class="exhibits" data-gallery="deep"></div>
+      </section>
+
+    </div>
+
+    <!-- ============ TIMELINE ============ -->
+    <section class="timeline-section" id="timeline" aria-labelledby="timeline-title">
+      <header class="section-head reveal">
+        <p class="eyebrow">A timeline of silence</p>
+        <h2 id="timeline-title">Fifty years of <em>going quiet</em></h2>
+        <p>Scroll sideways. Each colour belongs to a gallery.</p>
+      </header>
+      <ol class="timeline" id="timelineList" tabindex="0" aria-label="Timeline of key moments"></ol>
+    </section>
+
+    <!-- ============ WHY ============ -->
+    <section class="why" id="why" aria-labelledby="why-title">
+      <header class="section-head reveal">
+        <p class="eyebrow">The question nobody asks</p>
+        <h2 id="why-title">Why do we leave these machines <em>behind?</em></h2>
+        <p>Open each reason.</p>
+      </header>
+
+      <div class="reasons reveal">
+        <article class="reason">
+          <h3><button type="button" class="reason__btn" aria-expanded="false" aria-controls="r1">
+            <span class="reason__name">Fuel</span>
+            <span class="reason__short">Coming home costs more than leaving.</span>
+            <span class="reason__plus" aria-hidden="true"></span>
+          </button></h3>
+          <div class="reason__more" id="r1"><div>
+            <p>Every kilogram you bring home needs extra propellant to land, to take off again and to fly back. That propellant has weight too, which needs even more propellant. The numbers snowball.</p>
+            <p>So the Apollo crews spent their limited return capacity on what mattered most: more than 380 kg of Moon rock across the six landings.</p>
+          </div></div>
+        </article>
+
+        <article class="reason">
+          <h3><button type="button" class="reason__btn" aria-expanded="false" aria-controls="r2">
+            <span class="reason__name">Money</span>
+            <span class="reason__short">A round trip is a different mission.</span>
+            <span class="reason__plus" aria-hidden="true"></span>
+          </button></h3>
+          <div class="reason__more" id="r2"><div>
+            <p>Returning a spacecraft means a bigger rocket, more hardware and years of added cost. And for a machine like a rover, most of its value is already coming home as data, photographs and measurements.</p>
+            <p>The knowledge travels back. The metal stays where it is.</p>
+          </div></div>
+        </article>
+
+        <article class="reason">
+          <h3><button type="button" class="reason__btn" aria-expanded="false" aria-controls="r3">
+            <span class="reason__name">Engineering</span>
+            <span class="reason__short">Some machines are built to stay. Others simply wear out.</span>
+            <span class="reason__plus" aria-hidden="true"></span>
+          </button></h3>
+          <div class="reason__more" id="r3"><div>
+            <p>Some hardware is designed to remain on the surface after its mission. Other machines stop working because of dust, cold, ageing batteries or a failed part, with no one nearby to fix them.</p>
+            <p>Spirit and Opportunity never had a way back. They were built to live and work exactly where they landed.</p>
+          </div></div>
+        </article>
+
+        <article class="reason">
+          <h3><button type="button" class="reason__btn" aria-expanded="false" aria-controls="r4">
+            <span class="reason__name">Still travelling</span>
+            <span class="reason__short">Some were never left behind at all.</span>
+            <span class="reason__plus" aria-hidden="true"></span>
+          </button></h3>
+          <div class="reason__more" id="r4"><div>
+            <p>Voyager 1 and Voyager 2 are still operating in interstellar space, talking to Earth across more than 24 billion kilometres. They are not abandoned. They are on the longest journey humans have ever started.</p>
+          </div></div>
+        </article>
+      </div>
+
+      <div class="why__close reveal">
+        <p>Every mission teaches us something. These machines help us build better spacecraft, develop stronger technology and prepare for future human exploration.</p>
+        <p>And perhaps one day, the next generation of explorers will stand beside the old Apollo rover tracks and the silent Mars landers, and see that these machines were never just metal, wires and computers. They were the tools that helped humanity answer some of its biggest questions.</p>
+      </div>
+    </section>
+
+    <!-- ============ EPILOGUE ============ -->
+    <section class="epilogue" id="epilogue" aria-labelledby="epilogue-title">
+      <div class="epilogue__inner">
+        <p class="eyebrow reveal">Epilogue: the explorers of tomorrow</p>
+
+        <div class="whisper reveal">
+          <p>The mysterious message appears one final time.</p>
+          <p class="whisper__line">&ldquo;You have travelled through the history of our machines. But your journey is not over.&rdquo;</p>
+          <p class="whisper__line">&ldquo;The machines we left behind helped us understand the Moon, Mars and the universe beyond.&rdquo;</p>
+          <p class="whisper__big">&ldquo;Now it is your turn.&rdquo;</p>
+        </div>
+
+        <h2 class="epilogue__q reveal" id="epilogue-title">If humanity sends another machine into space tomorrow, what will it discover, and what story will it leave behind?</h2>
+
+        <form class="transmit reveal" id="transmit" autocomplete="off">
+          <label for="msg">Write the story your machine leaves behind</label>
+          <textarea id="msg" name="msg" rows="3" maxlength="140" placeholder="I landed on a quiet plain. Under the dust, I found..." required></textarea>
+          <div class="transmit__row">
+            <span class="transmit__count" id="msgCount">0 / 140</span>
+            <button type="submit" class="btn btn--gold">Transmit into space</button>
+          </div>
+        </form>
+        <ol class="transmissions" id="txList" aria-live="polite"></ol>
+
+        <div class="badge" id="badge" data-locked="true">
+          <div class="badge__seal" aria-hidden="true">
+            <svg viewBox="0 0 80 80" width="64" height="64"><circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="40" cy="40" r="28" fill="none" stroke="currentColor" stroke-dasharray="2 5"/><path d="M40 20l5 14h15l-12 9 5 15-13-9-13 9 5-15-12-9h15z" fill="currentColor"/></svg>
+          </div>
+          <div>
+            <p class="badge__title" id="badgeTitle">Curator badge: locked</p>
+            <p class="badge__text" id="badgeText">Identify all six machines to unlock it.</p>
+          </div>
+        </div>
+
+        <blockquote class="tagline reveal">
+          <p>They travelled millions of kilometres to explore the unknown. They never came home. But they left behind discoveries that brought the universe closer to us.</p>
+        </blockquote>
+
+        <p class="closing reveal">The history of space exploration isn't written only by the astronauts who return home. It's also written by the machines that stay behind.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built for the NASA Space Apps Challenge. Mission facts follow public NASA records; every illustration is an original, simplified drawing. This project is not affiliated with or endorsed by NASA.</p>
+    <p><a href="#top" id="replay">Replay the intro</a></p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
